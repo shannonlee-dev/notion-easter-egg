@@ -6,15 +6,15 @@
     <title>Evaluation Evidence</title>
     <style>
       * { box-sizing: border-box; }
-      body { margin: 0; min-width: 320px; background: #f1f1ef; }
-      #frame { width: 100%; aspect-ratio: 1; overflow: hidden; background: #f1f1ef; }
+      body { margin: 0; min-width: 320px; overflow: hidden; background: #f1f1ef; }
+      #frame { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: #f1f1ef; }
       #numbers {
         position: relative;
         width: 100%;
         min-height: 0;
-        aspect-ratio: 1;
+        aspect-ratio: 16 / 9;
         overflow: hidden;
-        background: #f1f1ef url("https://shannonlee-dev.github.io/notion-easter-egg/numeric-texture.png") center / contain no-repeat;
+        background: #f1f1ef url("https://shannonlee-dev.github.io/notion-easter-egg/numeric-texture.png") center / cover no-repeat;
         font-family: Inter, Pretendard, "Noto Sans KR", system-ui, sans-serif;
       }
       #noise, #evidence { position: absolute; inset: 0; }
@@ -28,7 +28,7 @@
         color: rgb(91 88 83 / var(--opacity)); font-size: var(--size); font-weight: 300;
       }
       #evidence a {
-        z-index: 1; color: rgb(74 71 66 / 38%); font-size: clamp(1.2rem, 3.4vw, 3.6rem);
+        z-index: 1; color: rgb(74 71 66 / 52%); font-size: clamp(0.9rem, 2.1vw, 2.2rem);
         font-weight: 380; text-decoration: none;
       }
       #evidence a:focus-visible { outline: 1px solid #4a4742; outline-offset: 6px; }
@@ -52,19 +52,19 @@
       const randomReal = () => {
         if (Math.random() < 0.025) return '0';
         const sign = Math.random() < 0.5 ? '-' : '';
-        const mantissa = random(1, 9.999999999).toFixed(Math.floor(random(2, 10)));
+        const mantissa = random(1, 9.9).toFixed(Math.floor(random(0, 2)));
         const exponent = Math.floor(random(-323, 309));
         return `${sign}${mantissa}e${exponent >= 0 ? '+' : ''}${exponent}`;
       };
 
-      Array.from({ length: 880 }, () => {
+      Array.from({ length: 96 }, () => {
         const number = document.createElement('span');
         number.textContent = randomReal();
         number.style.setProperty('--x', `${random(-5, 105)}%`);
         number.style.setProperty('--y', `${random(-5, 105)}%`);
-        number.style.setProperty('--rotation', `${random(-88, 88)}deg`);
-        number.style.setProperty('--size', `${random(0.55, 2.55)}rem`);
-        number.style.setProperty('--opacity', random(0.06, 0.27));
+        number.style.setProperty('--rotation', `${random(-65, 65)}deg`);
+        number.style.setProperty('--size', `${random(0.45, 1.05)}rem`);
+        number.style.setProperty('--opacity', random(0.045, 0.12));
         noise.append(number);
       });
 
