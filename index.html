@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Evaluation Evidence</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; min-width: 320px; background: #fff; }
+      #numbers {
+        display: grid;
+        grid-template-columns: repeat(11, minmax(0, 1fr));
+        align-items: center;
+        min-height: 310px;
+        padding: clamp(1.75rem, 7vw, 5.25rem);
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 17% 20%, rgb(221 237 255 / 45%), transparent 26%),
+          radial-gradient(circle at 84% 80%, rgb(232 224 255 / 34%), transparent 22%),
+          url("numeric-texture.png") center / cover no-repeat;
+        font-family: Inter, Pretendard, "Noto Sans KR", system-ui, sans-serif;
+      }
+      #numbers a {
+        display: grid; order: var(--order); place-items: center; aspect-ratio: 1;
+        color: rgb(111 117 136 / 36%); font-size: clamp(1rem, 2.8vw, 2.8rem);
+        font-weight: 350; letter-spacing: -0.08em; line-height: 1; text-decoration: none;
+        transform: rotate(var(--rotation)) scale(var(--scale));
+        transition: color 180ms ease, text-shadow 180ms ease, transform 180ms ease;
+      }
+      #numbers a:hover, #numbers a:focus-visible {
+        color: #5262a4; outline: none; text-shadow: 0 0 18px rgb(130 145 223 / 52%);
+        transform: rotate(0deg) scale(1.2);
+      }
+      #numbers a:focus-visible { border-radius: 999px; box-shadow: 0 0 0 2px rgb(82 98 164 / 70%); }
+      @media (max-width: 540px) { #numbers { grid-template-columns: repeat(8, minmax(0, 1fr)); min-height: 240px; padding: 1.4rem; } }
+      @media (prefers-reduced-motion: reduce) { #numbers a { transition: none; } }
+    </style>
+  </head>
+  <body>
+    <main id="numbers" aria-label="평가 항목별 구현 근거 링크"></main>
+    <script>
+      const repository = 'https://github.com/wilderif/codyssey-b7-1';
+      const paths = [
+        ['1','README.md#L5'], ['2','app/main.py#L52'], ['2','README.md#L95'], ['3','app/chat/router.py#L41'], ['3','README.md#L188'], ['4','app/chat/models.py#L49'], ['4','README.md#L304'], ['5','scripts/check_logs.sql#L1'], ['5','README.md#L353'], ['6','README.md#L389'], ['7','app/ui/router.py#L63'], ['7','app/auth/service.py#L73'], ['8','app/main.py#L60'], ['8','app/auth/dependencies.py#L26'], ['9','app/auth/dependencies.py#L50'], ['9','README.md#L166'], ['10','app/ui/templates/chat.html#L73'], ['10','app/ui/static/chat.js#L198'], ['11','app/chat/context.py#L16'], ['11','app/chat/openai_client.py#L19'], ['12','app/chat/models.py#L49'], ['12','docs/spec/db/DB.md#L145'], ['13','app/chat/router.py#L81'], ['13','app/admin/router.py#L24'], ['14','app/chat/openai_client.py#L48'], ['14','docs/spec/ai/AI.md#L56'], ['15','app/chat/router.py#L73'], ['15','app/chat/i18n.py#L20'], ['16','pull/51'], ['16','app/ui/static/chat.js#L136'], ['17','app/chat/service.py#L67'], ['17','app/chat/openai_client.py#L19'], ['18','README.md#L154'], ['18','app/ui/router.py#L144'], ['19','app/chat/schemas.py#L10'], ['19','docs/spec/api/API.md#L231'], ['20','app/main.py#L60'], ['20','app/auth/dependencies.py#L50'], ['21','app/chat/repository.py#L13'], ['21','app/auth/repository.py#L1'], ['22','app/core/config.py#L13'], ['23','.env.example#L2'], ['23','.gitignore#L15'], ['24','README.md#L401'], ['25','app/chat/router.py#L81'], ['26','README.md#L166'], ['27','app/core/config.py#L30'], ['27','app/chat/openai_client.py#L48'], ['28','app/chat/openai_client.py#L48'], ['28','docs/spec/ai/AI.md#L56'], ['29','scripts/check_logs.sql#L43'], ['29','README.md#L353'], ['30','app/chat/models.py#L81'], ['30','app/chat/models.py#L95'], ['31','README.md#L401']
+      ];
+      const field = document.querySelector('#numbers');
+      paths.forEach(([label, path], index) => {
+        const link = document.createElement('a');
+        link.href = path === 'pull/51' ? `${repository}/pull/51` : `${repository}/blob/main/${path}`;
+        link.target = '_blank'; link.rel = 'noreferrer'; link.textContent = label;
+        link.setAttribute('aria-label', `평가 항목 ${label} 근거 열기`);
+        link.style.setProperty('--order', (index * 17) % paths.length);
+        link.style.setProperty('--rotation', `${((index * 19) % 11) - 5}deg`);
+        link.style.setProperty('--scale', `${0.8 + ((index * 13) % 7) * 0.08}`);
+        field.append(link);
+      });
+    </script>
+  </body>
+</html>
