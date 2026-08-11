@@ -24,18 +24,15 @@
         position: absolute; left: var(--x); top: var(--y); white-space: nowrap;
         letter-spacing: -0.08em; line-height: 1;
         transform: translate(-50%, -50%) rotate(var(--rotation));
-      }
-      #noise span {
-        color: rgb(91 88 83 / var(--opacity)); font-size: var(--size); font-weight: 300;
+        color: rgb(74 71 66 / 17%); font-size: clamp(0.9rem, 2.1vw, 2.2rem);
+        font-weight: 380;
       }
       #minute-key {
         pointer-events: auto; border: 0; padding: 0; background: transparent;
-        color: rgb(91 88 83 / 18%); font: inherit; font-size: 1rem; font-weight: 300;
-        letter-spacing: -0.08em; cursor: pointer;
+        font-family: inherit; cursor: pointer;
       }
       #evidence a {
-        z-index: 1; color: rgb(74 71 66 / 17%); font-size: clamp(0.9rem, 2.1vw, 2.2rem);
-        font-weight: 380; text-decoration: none;
+        z-index: 1; text-decoration: none;
       }
       #evidence.is-locked { pointer-events: none; }
       #evidence a:focus-visible { outline: 1px solid #4a4742; outline-offset: 6px; }
@@ -58,6 +55,8 @@
       const minuteKeyLayer = document.querySelector('#minute-key-layer');
       const field = document.querySelector('#evidence');
       const DOUBLE_CLICK_WINDOW = 700;
+      const NOISE_REAL_COUNT = 96;
+      const NOISE_INTEGER_COUNT = 220;
       let locked = true;
       let lastMinuteKeyClick = 0;
       let minuteKeyMinute = -1;
@@ -70,16 +69,23 @@
         return `${sign}${mantissa}e${exponent >= 0 ? '+' : ''}${exponent}`;
       };
 
-      Array.from({ length: 96 }, () => {
+      const appendNoise = (value) => {
         const number = document.createElement('span');
-        number.textContent = randomReal();
+        number.textContent = value;
         number.style.setProperty('--x', `${random(-5, 105)}%`);
         number.style.setProperty('--y', `${random(-5, 105)}%`);
         number.style.setProperty('--rotation', `${random(-65, 65)}deg`);
-        number.style.setProperty('--size', `${random(0.45, 1.05)}rem`);
-        number.style.setProperty('--opacity', random(0.045, 0.12));
         noise.append(number);
-      });
+      };
+      const renderNoise = (minute) => {
+        noise.replaceChildren();
+        Array.from({ length: NOISE_REAL_COUNT }, () => appendNoise(randomReal()));
+        Array.from({ length: NOISE_INTEGER_COUNT }, () => {
+          let value = minute + 100;
+          while (value === minute + 100) value = Math.floor(random(100, 1001));
+          appendNoise(String(value));
+        });
+      };
 
       const minuteKey = document.createElement('button');
       minuteKey.id = 'minute-key';
@@ -102,6 +108,7 @@
         if (minute === minuteKeyMinute) return;
         minuteKeyMinute = minute;
         lastMinuteKeyClick = 0;
+        renderNoise(minute);
         minuteKey.textContent = String(minute + 100);
         minuteKey.setAttribute('aria-label', '이스터에그 잠금 해제 숫자');
       };
