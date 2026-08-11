@@ -17,9 +17,10 @@
         background: #f1f1ef url("https://shannonlee-dev.github.io/notion-easter-egg/numeric-texture.png") center / cover no-repeat;
         font-family: Inter, Pretendard, "Noto Sans KR", system-ui, sans-serif;
       }
-      #noise, #evidence { position: absolute; inset: 0; }
+      #noise, #minute-key-layer, #evidence { position: absolute; inset: 0; }
       #noise { pointer-events: none; }
-      #noise span, #evidence a {
+      #minute-key-layer { z-index: 3; pointer-events: none; }
+      #noise span, #minute-key, #evidence a {
         position: absolute; left: var(--x); top: var(--y); white-space: nowrap;
         letter-spacing: -0.08em; line-height: 1;
         transform: translate(-50%, -50%) rotate(var(--rotation));
@@ -27,10 +28,17 @@
       #noise span {
         color: rgb(91 88 83 / var(--opacity)); font-size: var(--size); font-weight: 300;
       }
+      #minute-key {
+        pointer-events: auto; border: 0; padding: 0; background: transparent;
+        color: rgb(91 88 83 / 18%); font: inherit; font-size: 1rem; font-weight: 300;
+        letter-spacing: -0.08em; cursor: pointer;
+      }
       #evidence a {
         z-index: 1; color: rgb(74 71 66 / 52%); font-size: clamp(0.9rem, 2.1vw, 2.2rem);
         font-weight: 380; text-decoration: none;
       }
+      #evidence.is-locked { pointer-events: none; }
+      #evidence.is-locked a { color: rgb(74 71 66 / 17%); }
       #evidence a:focus-visible { outline: 1px solid #4a4742; outline-offset: 6px; }
     </style>
   </head>
@@ -38,7 +46,8 @@
     <div id="frame">
       <main id="numbers" aria-label="평가 항목별 구현 근거 링크">
         <div id="noise" aria-hidden="true"></div>
-        <div id="evidence"></div>
+        <div id="minute-key-layer"></div>
+        <div id="evidence" class="is-locked"></div>
       </main>
     </div>
     <script>
@@ -47,7 +56,12 @@
         ['1','README.md#L5'], ['2','app/main.py#L52'], ['2','README.md#L95'], ['3','app/chat/router.py#L41'], ['3','README.md#L188'], ['4','app/chat/models.py#L49'], ['4','README.md#L304'], ['5','scripts/check_logs.sql#L1'], ['5','README.md#L353'], ['6','README.md#L389'], ['7','app/ui/router.py#L63'], ['7','app/auth/service.py#L73'], ['8','app/main.py#L60'], ['8','app/auth/dependencies.py#L26'], ['9','app/auth/dependencies.py#L50'], ['9','README.md#L166'], ['10','app/ui/templates/chat.html#L73'], ['10','app/ui/static/chat.js#L198'], ['11','app/chat/context.py#L16'], ['11','app/chat/openai_client.py#L19'], ['12','app/chat/models.py#L49'], ['12','docs/spec/db/DB.md#L145'], ['13','app/chat/router.py#L81'], ['13','app/admin/router.py#L24'], ['14','app/chat/openai_client.py#L48'], ['14','docs/spec/ai/AI.md#L56'], ['15','app/chat/router.py#L73'], ['15','app/chat/i18n.py#L20'], ['16','pull/51'], ['16','app/ui/static/chat.js#L136'], ['17','app/chat/service.py#L67'], ['17','app/chat/openai_client.py#L19'], ['18','README.md#L154'], ['18','app/ui/router.py#L144'], ['19','app/chat/schemas.py#L10'], ['19','docs/spec/api/API.md#L231'], ['20','app/main.py#L60'], ['20','app/auth/dependencies.py#L50'], ['21','app/chat/repository.py#L13'], ['21','app/auth/repository.py#L1'], ['22','app/core/config.py#L13'], ['23','.env.example#L2'], ['23','.gitignore#L15'], ['24','README.md#L401'], ['25','app/chat/router.py#L81'], ['26','README.md#L166'], ['27','app/core/config.py#L30'], ['27','app/chat/openai_client.py#L48'], ['28','app/chat/openai_client.py#L48'], ['28','docs/spec/ai/AI.md#L56'], ['29','scripts/check_logs.sql#L43'], ['29','README.md#L353'], ['30','app/chat/models.py#L81'], ['30','app/chat/models.py#L95'], ['31','README.md#L401']
       ];
       const noise = document.querySelector('#noise');
+      const minuteKeyLayer = document.querySelector('#minute-key-layer');
       const field = document.querySelector('#evidence');
+      const DOUBLE_CLICK_WINDOW = 700;
+      let locked = true;
+      let lastMinuteKeyClick = 0;
+      let minuteKeyMinute = -1;
       const random = (minimum, maximum) => minimum + Math.random() * (maximum - minimum);
       const randomReal = () => {
         if (Math.random() < 0.025) return '0';
@@ -68,6 +82,44 @@
         noise.append(number);
       });
 
+      const minuteKey = document.createElement('button');
+      minuteKey.id = 'minute-key';
+      minuteKey.type = 'button';
+      minuteKey.style.setProperty('--x', `${random(8, 92)}%`);
+      minuteKey.style.setProperty('--y', `${random(8, 92)}%`);
+      minuteKey.style.setProperty('--rotation', `${random(-65, 65)}deg`);
+      minuteKeyLayer.append(minuteKey);
+
+      const lock = () => {
+        locked = true;
+        field.classList.add('is-locked');
+      };
+      const unlock = () => {
+        locked = false;
+        field.classList.remove('is-locked');
+      };
+      const refreshMinuteKey = () => {
+        const minute = new Date().getMinutes();
+        if (minute === minuteKeyMinute) return;
+        minuteKeyMinute = minute;
+        lastMinuteKeyClick = 0;
+        minuteKey.textContent = String(minute + 100);
+        minuteKey.setAttribute('aria-label', '이스터에그 잠금 해제 숫자');
+      };
+
+      refreshMinuteKey();
+      setInterval(refreshMinuteKey, 1000);
+      minuteKey.addEventListener('click', () => {
+        refreshMinuteKey();
+        const now = Date.now();
+        if (now - lastMinuteKeyClick <= DOUBLE_CLICK_WINDOW) {
+          unlock();
+          lastMinuteKeyClick = 0;
+          return;
+        }
+        lastMinuteKeyClick = now;
+      });
+
       paths.forEach(([label, path]) => {
         const link = document.createElement('a');
         link.href = path === 'pull/51' ? `${repository}/pull/51` : `${repository}/blob/main/${path}`;
@@ -76,6 +128,13 @@
         link.style.setProperty('--x', `${random(4, 96)}%`);
         link.style.setProperty('--y', `${random(5, 95)}%`);
         link.style.setProperty('--rotation', `${random(-82, 82)}deg`);
+        link.addEventListener('click', (event) => {
+          if (locked) {
+            event.preventDefault();
+            return;
+          }
+          lock();
+        });
         field.append(link);
       });
     </script>
