@@ -55,12 +55,17 @@
       const minuteKeyLayer = document.querySelector('#minute-key-layer');
       const field = document.querySelector('#evidence');
       const DOUBLE_CLICK_WINDOW = 700;
+      const COLUMN_COUNT = 31;
       const NOISE_REAL_COUNT = 48;
       const NOISE_INTEGER_COUNT = 110;
       let locked = true;
       let lastMinuteKeyClick = 0;
       let minuteKeyMinute = -1;
       const random = (minimum, maximum) => minimum + Math.random() * (maximum - minimum);
+      const columnX = (index) => {
+        const columnWidth = 100 / COLUMN_COUNT;
+        return `${random(index * columnWidth, (index + 1) * columnWidth)}%`;
+      };
       const randomReal = () => {
         if (Math.random() < 0.025) return '0';
         const sign = Math.random() < 0.5 ? '-' : '';
@@ -90,9 +95,6 @@
       const minuteKey = document.createElement('button');
       minuteKey.id = 'minute-key';
       minuteKey.type = 'button';
-      minuteKey.style.setProperty('--x', `${random(8, 92)}%`);
-      minuteKey.style.setProperty('--y', `${random(8, 92)}%`);
-      minuteKey.style.setProperty('--rotation', `${random(-65, 65)}deg`);
       minuteKeyLayer.append(minuteKey);
 
       const lock = () => {
@@ -109,6 +111,9 @@
         minuteKeyMinute = minute;
         lastMinuteKeyClick = 0;
         renderNoise(minute);
+        minuteKey.style.setProperty('--x', columnX(0));
+        minuteKey.style.setProperty('--y', `${random(5, 95)}%`);
+        minuteKey.style.setProperty('--rotation', `${random(-65, 65)}deg`);
         minuteKey.textContent = String(minute + 100);
         minuteKey.setAttribute('aria-label', '이스터에그 잠금 해제 숫자');
       };
@@ -131,7 +136,7 @@
         link.href = path === 'pull/51' ? `${repository}/pull/51` : `${repository}/blob/main/${path}`;
         link.target = '_blank'; link.rel = 'noreferrer'; link.textContent = label;
         link.setAttribute('aria-label', `평가 항목 ${label} 근거 열기`);
-        link.style.setProperty('--x', `${random(4, 96)}%`);
+        link.style.setProperty('--x', columnX(Number(label) - 1));
         link.style.setProperty('--y', `${random(5, 95)}%`);
         link.style.setProperty('--rotation', `${random(-82, 82)}deg`);
         link.addEventListener('click', (event) => {
