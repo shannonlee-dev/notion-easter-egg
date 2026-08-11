@@ -6,19 +6,16 @@
     <title>Evaluation Evidence</title>
     <style>
       * { box-sizing: border-box; }
-      body { margin: 0; min-width: 320px; background: #fff; }
-      #frame { height: clamp(220px, 28.5vw, 380px); overflow: hidden; }
+      body { margin: 0; min-width: 320px; background: #f1f1ef; }
+      #frame { width: 100%; aspect-ratio: 1; overflow: hidden; background: #f1f1ef; }
       #numbers {
         position: relative;
-        min-height: clamp(440px, 57vw, 760px);
+        width: 100%;
+        min-height: 0;
+        aspect-ratio: 1;
         overflow: hidden;
-        background:
-          radial-gradient(circle at 17% 20%, rgb(221 237 255 / 45%), transparent 26%),
-          radial-gradient(circle at 84% 80%, rgb(232 224 255 / 34%), transparent 22%),
-          url("https://shannonlee-dev.github.io/notion-easter-egg/numeric-texture.png") center / cover no-repeat;
+        background: #f1f1ef url("https://shannonlee-dev.github.io/notion-easter-egg/numeric-texture.png") center / contain no-repeat;
         font-family: Inter, Pretendard, "Noto Sans KR", system-ui, sans-serif;
-        transform: scale(0.5);
-        transform-origin: top center;
       }
       #noise, #evidence { position: absolute; inset: 0; }
       #noise { pointer-events: none; }
@@ -28,14 +25,13 @@
         transform: translate(-50%, -50%) rotate(var(--rotation));
       }
       #noise span {
-        color: rgb(100 108 135 / var(--opacity)); font-size: var(--size); font-weight: 300;
+        color: rgb(91 88 83 / var(--opacity)); font-size: var(--size); font-weight: 300;
       }
       #evidence a {
-        z-index: 1; color: rgb(93 101 137 / 38%); font-size: clamp(1.2rem, 3.4vw, 3.6rem);
+        z-index: 1; color: rgb(74 71 66 / 38%); font-size: clamp(1.2rem, 3.4vw, 3.6rem);
         font-weight: 380; text-decoration: none;
       }
-      #evidence a:focus-visible { outline: 1px solid #5262a4; outline-offset: 6px; }
-      @media (max-width: 540px) { #frame { height: 260px; } #numbers { min-height: 520px; } }
+      #evidence a:focus-visible { outline: 1px solid #4a4742; outline-offset: 6px; }
     </style>
   </head>
   <body>
