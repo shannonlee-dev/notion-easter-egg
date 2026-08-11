@@ -7,6 +7,7 @@
     <style>
       * { box-sizing: border-box; }
       body { margin: 0; min-width: 320px; background: #fff; }
+      #frame { height: clamp(220px, 28.5vw, 380px); overflow: hidden; }
       #numbers {
         position: relative;
         min-height: clamp(440px, 57vw, 760px);
@@ -16,6 +17,8 @@
           radial-gradient(circle at 84% 80%, rgb(232 224 255 / 34%), transparent 22%),
           url("https://shannonlee-dev.github.io/notion-easter-egg/numeric-texture.png") center / cover no-repeat;
         font-family: Inter, Pretendard, "Noto Sans KR", system-ui, sans-serif;
+        transform: scale(0.5);
+        transform-origin: top center;
       }
       #noise, #evidence { position: absolute; inset: 0; }
       #noise { pointer-events: none; }
@@ -32,14 +35,16 @@
         font-weight: 380; text-decoration: none;
       }
       #evidence a:focus-visible { outline: 1px solid #5262a4; outline-offset: 6px; }
-      @media (max-width: 540px) { #numbers { min-height: 520px; } }
+      @media (max-width: 540px) { #frame { height: 260px; } #numbers { min-height: 520px; } }
     </style>
   </head>
   <body>
-    <main id="numbers" aria-label="평가 항목별 구현 근거 링크">
-      <div id="noise" aria-hidden="true"></div>
-      <div id="evidence"></div>
-    </main>
+    <div id="frame">
+      <main id="numbers" aria-label="평가 항목별 구현 근거 링크">
+        <div id="noise" aria-hidden="true"></div>
+        <div id="evidence"></div>
+      </main>
+    </div>
     <script>
       const repository = 'https://github.com/wilderif/codyssey-b7-1';
       const paths = [
