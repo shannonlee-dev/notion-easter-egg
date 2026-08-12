@@ -49,6 +49,13 @@ test('uses the approved decoy limits and the main URL builder', () => {
   assert.match(html, /link\.href = evidenceUrl\(path\)/);
 });
 
+test('uses the approved five-percent larger shared number size', () => {
+  assert.match(
+    html,
+    /font-size: var\(--number-font-size, clamp\(0\.95rem, 2\.2vw, 2\.3rem\)\)/,
+  );
+});
+
 test('opens Markdown anchors in GitHub plain source view', () => {
   const match = html.match(
     /const evidenceUrl = \(path\) => \{([\s\S]*?)^      \};/m,
