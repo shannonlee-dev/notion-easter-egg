@@ -232,9 +232,15 @@
         field.classList.remove('is-locked');
       };
 
+      const evidenceUrl = (path) => {
+        const [file, anchor] = path.split('#');
+        const sourceQuery = file.toLowerCase().endsWith('.md') ? '?plain=1' : '';
+        return `${repository}/blob/main/${file}${sourceQuery}#${anchor}`;
+      };
+
       paths.forEach(([label, path]) => {
         const link = document.createElement('a');
-        link.href = `${repository}/blob/main/${path}`;
+        link.href = evidenceUrl(path);
         link.target = '_blank'; link.rel = 'noreferrer'; link.textContent = label;
         link.dataset.column = String(Number(label) - 1);
         link.setAttribute('aria-label', `평가 항목 ${label} 근거 열기`);

@@ -46,7 +46,31 @@ test('covers all items with exact line anchors and keeps item 3 in README', () =
 test('uses the approved decoy limits and the main URL builder', () => {
   assert.match(html, /NOISE_REAL_COUNT = 48/);
   assert.match(html, /NOISE_INTEGER_COUNT = 76/);
-  assert.match(html, /`\$\{repository\}\/blob\/main\/\$\{path\}`/);
+  assert.match(html, /link\.href = evidenceUrl\(path\)/);
+});
+
+test('opens Markdown anchors in GitHub plain source view', () => {
+  const match = html.match(
+    /const evidenceUrl = \(path\) => \{([\s\S]*?)^      \};/m,
+  );
+  assert.ok(match, 'evidenceUrl production helper is missing');
+  const evidenceUrl = new Function(
+    'repository',
+    `return (path) => {${match[1]}};`,
+  )('https://github.com/wilderif/codyssey-b7-1');
+
+  assert.equal(
+    evidenceUrl('README.md#L190-L204'),
+    'https://github.com/wilderif/codyssey-b7-1/blob/main/README.md?plain=1#L190-L204',
+  );
+  assert.equal(
+    evidenceUrl('docs/spec/api/API.md#L76-L105'),
+    'https://github.com/wilderif/codyssey-b7-1/blob/main/docs/spec/api/API.md?plain=1#L76-L105',
+  );
+  assert.equal(
+    evidenceUrl('app/main.py#L60-L66'),
+    'https://github.com/wilderif/codyssey-b7-1/blob/main/app/main.py#L60-L66',
+  );
 });
 
 test('defines measured collision-free responsive placement', () => {
