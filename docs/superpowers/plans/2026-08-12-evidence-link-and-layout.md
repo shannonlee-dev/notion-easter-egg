@@ -1,5 +1,10 @@
 # Evidence Link and Collision-Free Layout Implementation Plan
 
+> **Current-state note (2026-08-12):** This plan records the original 96-link rollout. A subsequent
+> PASS evaluation review added 10 direct implementation grounds and reduced integer decoys by the
+> same amount. The deployed contract is now 106 evidence links, 48 real-form decoys, and 66 integer
+> decoys; the design spec and executable test are the current sources of truth.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Replace the evidence page with the approved 96 exact `main` line-range links, reduce integer decoys by 34, and guarantee that every rendered DOM number has a non-overlapping rotated bounding box.

@@ -51,14 +51,14 @@
       const repository = 'https://github.com/wilderif/codyssey-b7-1';
       const paths = [
         ['1', 'README.md#L7'], ['1', 'README.md#L9'],
-        ['2', 'README.md#L99-L125'], ['2', 'README.md#L131'],
+        ['2', 'README.md#L97-L125'], ['2', 'README.md#L131'],
         ['3', 'README.md#L190-L204'], ['3', 'README.md#L212-L219'],
         ['3', 'README.md#L221-L234'], ['3', 'README.md#L236-L260'],
         ['4', 'README.md#L306'], ['4', 'README.md#L308-L333'],
         ['4', 'README.md#L335-L349'],
         ['5', 'README.md#L355-L365'], ['5', 'README.md#L367-L377'],
         ['5', 'README.md#L379-L383'],
-        ['6', 'README.md#L393-L397'],
+        ['6', 'README.md#L389-L397'],
         ['7', 'app/ui/templates/signup.html#L8-L21'],
         ['7', 'app/ui/templates/_auth_form.html#L12-L51'],
         ['7', 'README.md#L172-L174'], ['7', 'app/ui/router.py#L63-L89'],
@@ -66,12 +66,14 @@
         ['8', 'app/main.py#L60-L66'], ['8', 'app/auth/dependencies.py#L26-L32'],
         ['8', 'README.md#L176'], ['8', 'README.md#L178-L184'],
         ['9', 'app/auth/dependencies.py#L50-L69'],
+        ['9', 'app/chat/router.py#L41-L58'],
         ['9', 'app/chat/router.py#L162-L172'], ['9', 'README.md#L168'],
         ['10', 'app/ui/templates/chat.html#L28-L60'],
         ['10', 'app/ui/templates/chat.html#L68-L103'],
         ['10', 'app/ui/templates/chat.html#L105-L123'],
         ['10', 'app/ui/static/chat.js#L197-L205'],
         ['10', 'app/ui/static/chat.js#L207-L239'],
+        ['10', 'app/ui/router.py#L144-L168'],
         ['11', 'app/chat/service.py#L97-L113'],
         ['11', 'app/chat/openai_client.py#L26-L37'],
         ['11', 'docs/spec/ai/AI.md#L9-L14'],
@@ -79,6 +81,7 @@
         ['11', 'docs/spec/ai/AI.md#L38-L54'],
         ['12', 'app/chat/models.py#L49-L97'],
         ['12', 'app/chat/repository.py#L141-L195'],
+        ['12', 'app/chat/service.py#L143-L158'],
         ['12', 'docs/spec/db/DB.md#L145-L172'],
         ['13', 'app/ui/router.py#L144-L168'],
         ['13', 'app/chat/service.py#L226-L257'],
@@ -91,18 +94,22 @@
         ['14', 'app/chat/openai_client.py#L48-L65'],
         ['14', 'docs/spec/ai/AI.md#L56-L73'],
         ['15', 'app/chat/router.py#L71-L74'],
+        ['15', 'app/chat/router.py#L162-L174'],
         ['15', 'app/chat/i18n.py#L7-L34'],
         ['15', 'docs/spec/api/API.md#L174-L207'],
         ['16', 'app/chat/schemas.py#L13-L31'],
+        ['16', 'app/chat/service.py#L260-L266'],
         ['16', 'app/ui/static/chat.js#L135-L148'],
         ['16', 'README.md#L208-L210'], ['16', 'README.md#L290-L300'],
         ['17', 'app/chat/schemas.py#L13-L60'],
-        ['17', 'app/chat/router.py#L41-L78'],
+        ['17', 'app/chat/router.py#L34-L78'],
         ['17', 'app/chat/service.py#L67-L164'],
         ['17', 'app/chat/openai_client.py#L19-L65'],
         ['17', 'app/chat/repository.py#L13-L65'],
         ['18', 'README.md#L136-L151'], ['18', 'README.md#L154-L162'],
+        ['18', 'app/ui/router.py#L107-L141'],
         ['19', 'app/chat/schemas.py#L13-L60'],
+        ['19', 'app/chat/router.py#L28-L34'],
         ['19', 'docs/spec/api/API.md#L231-L286'],
         ['20', 'app/main.py#L60-L66'],
         ['20', 'app/auth/dependencies.py#L50-L70'],
@@ -113,6 +120,7 @@
         ['21', 'app/chat/repository.py#L13-L65'],
         ['21', 'app/chat/repository.py#L68-L138'],
         ['21', 'app/chat/repository.py#L198-L241'],
+        ['21', 'app/auth/repository.py#L11-L47'],
         ['22', 'app/core/config.py#L13-L40'],
         ['23', '.env.example#L1-L6'], ['23', '.gitignore#L14-L18'],
         ['24', 'README.md#L401-L410'],
@@ -123,10 +131,12 @@
         ['27', 'app/chat/openai_client.py#L48-L65'],
         ['28', 'app/chat/openai_client.py#L26-L37'],
         ['28', 'app/chat/openai_client.py#L48-L65'],
+        ['28', 'app/chat/router.py#L69-L74'],
         ['28', 'docs/spec/ai/AI.md#L56-L73'],
         ['29', 'README.md#L353-L383'], ['29', 'README.md#L385-L387'],
         ['30', 'app/chat/models.py#L49-L97'],
         ['30', 'app/chat/router.py#L61-L67'],
+        ['30', 'app/chat/service.py#L92-L162'],
         ['30', 'app/chat/repository.py#L141-L195'],
         ['30', 'docs/spec/db/DB.md#L48-L65'],
         ['31', 'README.md#L412-L425']
@@ -138,7 +148,7 @@
       const DOUBLE_CLICK_WINDOW = 700;
       const COLUMN_COUNT = 31;
       const NOISE_REAL_COUNT = 48;
-      const NOISE_INTEGER_COUNT = 76;
+      const NOISE_INTEGER_COUNT = 66;
       const COLLISION_PADDING_PX = 2;
       const REQUIRED_FONT_SCALES = [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.25, 0.2];
       let locked = true;

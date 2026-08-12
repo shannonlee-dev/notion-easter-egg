@@ -22,8 +22,8 @@ const actual = [...html.matchAll(/\['(\d+)',\s*'([^']+)'\]/g)].map(
   (match) => [match[1], match[2]],
 );
 
-test('matches the approved 96-block evidence design', () => {
-  assert.equal(expected.length, 96);
+test('matches the approved 106-block evidence design', () => {
+  assert.equal(expected.length, 106);
   assert.deepEqual(actual, expected);
 });
 
@@ -45,7 +45,7 @@ test('covers all items with exact line anchors and keeps item 3 in README', () =
 
 test('uses the approved decoy limits and the main URL builder', () => {
   assert.match(html, /NOISE_REAL_COUNT = 48/);
-  assert.match(html, /NOISE_INTEGER_COUNT = 76/);
+  assert.match(html, /NOISE_INTEGER_COUNT = 66/);
   assert.match(html, /link\.href = evidenceUrl\(path\)/);
 });
 
