@@ -24,7 +24,8 @@
         position: absolute; left: var(--x); top: var(--y); white-space: nowrap;
         letter-spacing: -0.08em; line-height: 1;
         transform: translate(-50%, -50%) rotate(var(--rotation));
-        color: rgb(74 71 66 / 17%); font-size: clamp(0.9rem, 2.1vw, 2.2rem);
+        color: rgb(74 71 66 / 17%);
+        font-size: var(--number-font-size, clamp(0.9rem, 2.1vw, 2.2rem));
         font-weight: 380;
       }
       #minute-key {
@@ -133,18 +134,19 @@
       const noise = document.querySelector('#noise');
       const minuteKeyLayer = document.querySelector('#minute-key-layer');
       const field = document.querySelector('#evidence');
+      const numbers = document.querySelector('#numbers');
       const DOUBLE_CLICK_WINDOW = 700;
       const COLUMN_COUNT = 31;
       const NOISE_REAL_COUNT = 48;
       const NOISE_INTEGER_COUNT = 76;
+      const COLLISION_PADDING_PX = 2;
+      const REQUIRED_FONT_SCALES = [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.25, 0.2];
       let locked = true;
       let lastMinuteKeyClick = 0;
       let minuteKeyMinute = -1;
+      let layoutFrame = 0;
+      let noiseValues = [];
       const random = (minimum, maximum) => minimum + Math.random() * (maximum - minimum);
-      const columnX = (index) => {
-        const columnWidth = 100 / COLUMN_COUNT;
-        return `${random(index * columnWidth, (index + 1) * columnWidth)}%`;
-      };
       const randomReal = () => {
         if (Math.random() < 0.025) return '0';
         const sign = Math.random() < 0.5 ? '-' : '';
@@ -153,27 +155,72 @@
         return `${sign}${mantissa}e${exponent >= 0 ? '+' : ''}${exponent}`;
       };
 
-      const appendNoise = (value) => {
-        const number = document.createElement('span');
-        number.textContent = value;
-        number.style.setProperty('--x', `${random(-5, 105)}%`);
-        number.style.setProperty('--y', `${random(-5, 105)}%`);
-        number.style.setProperty('--rotation', `${random(-65, 65)}deg`);
-        noise.append(number);
+      const createNoiseValues = (minute) => {
+        const values = Array.from({ length: NOISE_REAL_COUNT }, randomReal);
+        while (values.length < NOISE_REAL_COUNT + NOISE_INTEGER_COUNT) {
+          const value = Math.floor(random(100, 1001));
+          if (value !== minute + 100) values.push(String(value));
+        }
+        return values;
       };
-      const renderNoise = (minute) => {
+
+      const renderNoise = () => {
         noise.replaceChildren();
-        Array.from({ length: NOISE_REAL_COUNT }, () => appendNoise(randomReal()));
-        Array.from({ length: NOISE_INTEGER_COUNT }, () => {
-          let value = minute + 100;
-          while (value === minute + 100) value = Math.floor(random(100, 1001));
-          appendNoise(String(value));
+        noiseValues.forEach((value) => {
+          const number = document.createElement('span');
+          number.textContent = value;
+          noise.append(number);
         });
+      };
+
+      const rotatedBounds = (width, height, rotation) => {
+        const radians = rotation * Math.PI / 180;
+        return {
+          width: Math.abs(width * Math.cos(radians)) + Math.abs(height * Math.sin(radians)),
+          height: Math.abs(width * Math.sin(radians)) + Math.abs(height * Math.cos(radians)),
+        };
+      };
+
+      const intersects = (candidate, placed, padding = COLLISION_PADDING_PX) =>
+        placed.some((other) => !(
+          candidate.right + padding <= other.left
+          || candidate.left >= other.right + padding
+          || candidate.bottom + padding <= other.top
+          || candidate.top >= other.bottom + padding
+        ));
+
+      const tryPlace = (element, area, placed, rotationLimit = 65, attempts = 80) => {
+        for (let attempt = 0; attempt < attempts; attempt += 1) {
+          const rotation = random(-rotationLimit, rotationLimit);
+          const bounds = rotatedBounds(element.offsetWidth, element.offsetHeight, rotation);
+          const minimumX = area.left + bounds.width / 2 + COLLISION_PADDING_PX;
+          const maximumX = area.right - bounds.width / 2 - COLLISION_PADDING_PX;
+          const minimumY = area.top + bounds.height / 2 + COLLISION_PADDING_PX;
+          const maximumY = area.bottom - bounds.height / 2 - COLLISION_PADDING_PX;
+          if (minimumX > maximumX || minimumY > maximumY) continue;
+
+          const x = random(minimumX, maximumX);
+          const y = random(minimumY, maximumY);
+          const candidate = {
+            left: x - bounds.width / 2,
+            right: x + bounds.width / 2,
+            top: y - bounds.height / 2,
+            bottom: y + bounds.height / 2,
+          };
+          if (intersects(candidate, placed)) continue;
+
+          element.style.setProperty('--x', `${x}px`);
+          element.style.setProperty('--y', `${y}px`);
+          element.style.setProperty('--rotation', `${rotation}deg`);
+          return candidate;
+        }
+        return null;
       };
 
       const minuteKey = document.createElement('button');
       minuteKey.id = 'minute-key';
       minuteKey.type = 'button';
+      minuteKey.dataset.column = '0';
       minuteKeyLayer.append(minuteKey);
 
       const lock = () => {
@@ -184,21 +231,139 @@
         locked = false;
         field.classList.remove('is-locked');
       };
+
+      paths.forEach(([label, path]) => {
+        const link = document.createElement('a');
+        link.href = `${repository}/blob/main/${path}`;
+        link.target = '_blank'; link.rel = 'noreferrer'; link.textContent = label;
+        link.dataset.column = String(Number(label) - 1);
+        link.setAttribute('aria-label', `평가 항목 ${label} 근거 열기`);
+        link.addEventListener('click', (event) => {
+          if (locked) {
+            event.preventDefault();
+            return;
+          }
+          lock();
+        });
+        field.append(link);
+      });
+
+      const requiredByColumn = () => {
+        const columns = Array.from({ length: COLUMN_COUNT }, () => []);
+        columns[0].push(minuteKey);
+        Array.from(field.children).forEach((link) => {
+          columns[Number(link.dataset.column)].push(link);
+        });
+        return columns;
+      };
+
+      const placeRequired = (baseFontSize) => {
+        const required = [minuteKey, ...field.children];
+        const columnWidth = numbers.clientWidth / COLUMN_COUNT;
+
+        for (const scale of REQUIRED_FONT_SCALES) {
+          const placed = [];
+          const fontSize = baseFontSize * scale;
+          required.forEach((element) => {
+            element.style.setProperty('--number-font-size', `${fontSize}px`);
+            element.style.visibility = 'hidden';
+          });
+
+          let complete = true;
+          requiredByColumn().forEach((column, columnIndex) => {
+            const rowHeight = numbers.clientHeight / column.length;
+            column.forEach((element, rowIndex) => {
+              if (!complete) return;
+              const rectangle = tryPlace(element, {
+                left: columnIndex * columnWidth,
+                right: (columnIndex + 1) * columnWidth,
+                top: rowIndex * rowHeight,
+                bottom: (rowIndex + 1) * rowHeight,
+              }, placed, 32, 80);
+              if (!rectangle) {
+                complete = false;
+                return;
+              }
+              placed.push(rectangle);
+            });
+          });
+
+          if (complete) {
+            required.forEach((element) => { element.style.visibility = 'visible'; });
+            return { placed, fontSize };
+          }
+        }
+        return null;
+      };
+
+      const auditOverlaps = () => {
+        const visible = [minuteKey, ...field.children, ...noise.children]
+          .filter((element) => element.style.visibility !== 'hidden');
+        const rectangles = visible.map((element) => element.getBoundingClientRect());
+        let overlapCount = 0;
+        rectangles.forEach((rectangle, index) => {
+          for (let otherIndex = index + 1; otherIndex < rectangles.length; otherIndex += 1) {
+            const other = rectangles[otherIndex];
+            if (!(
+              rectangle.right <= other.left
+              || rectangle.left >= other.right
+              || rectangle.bottom <= other.top
+              || rectangle.top >= other.bottom
+            )) overlapCount += 1;
+          }
+        });
+        numbers.dataset.overlapCount = String(overlapCount);
+        numbers.dataset.evidenceCount = String(field.children.length);
+        numbers.dataset.noiseCount = String(noise.children.length);
+        numbers.dataset.layoutReady = 'true';
+      };
+
+      const layoutScene = () => {
+        if (!numbers.clientWidth || !numbers.clientHeight) return;
+        numbers.dataset.layoutReady = 'false';
+        renderNoise();
+        const allElements = [minuteKey, ...field.children, ...noise.children];
+        allElements.forEach((element) => {
+          element.style.removeProperty('--number-font-size');
+          element.style.visibility = 'hidden';
+        });
+        const baseFontSize = parseFloat(getComputedStyle(minuteKey).fontSize);
+        const requiredLayout = placeRequired(baseFontSize);
+        if (!requiredLayout) {
+          numbers.dataset.overlapCount = 'layout-failed';
+          return;
+        }
+
+        const panel = { left: 0, right: numbers.clientWidth, top: 0, bottom: numbers.clientHeight };
+        Array.from(noise.children).forEach((element) => {
+          element.style.setProperty('--number-font-size', `${requiredLayout.fontSize}px`);
+          const rectangle = tryPlace(element, panel, requiredLayout.placed, 65, 140);
+          if (!rectangle) {
+            element.remove();
+            return;
+          }
+          element.style.visibility = 'visible';
+          requiredLayout.placed.push(rectangle);
+        });
+        auditOverlaps();
+      };
+
+      const scheduleLayout = () => {
+        cancelAnimationFrame(layoutFrame);
+        layoutFrame = requestAnimationFrame(layoutScene);
+      };
+
       const refreshMinuteKey = () => {
         const minute = new Date().getMinutes();
         if (minute === minuteKeyMinute) return;
         minuteKeyMinute = minute;
         lastMinuteKeyClick = 0;
-        renderNoise(minute);
-        minuteKey.style.setProperty('--x', columnX(0));
-        minuteKey.style.setProperty('--y', `${random(5, 95)}%`);
-        minuteKey.style.setProperty('--rotation', `${random(-65, 65)}deg`);
         minuteKey.textContent = String(minute + 100);
         minuteKey.setAttribute('aria-label', '이스터에그 잠금 해제 숫자');
+        noiseValues = createNoiseValues(minute);
+        scheduleLayout();
       };
 
-      refreshMinuteKey();
-      setInterval(refreshMinuteKey, 1000);
       minuteKey.addEventListener('click', () => {
         refreshMinuteKey();
         const now = Date.now();
@@ -210,23 +375,10 @@
         lastMinuteKeyClick = now;
       });
 
-      paths.forEach(([label, path]) => {
-        const link = document.createElement('a');
-        link.href = `${repository}/blob/main/${path}`;
-        link.target = '_blank'; link.rel = 'noreferrer'; link.textContent = label;
-        link.setAttribute('aria-label', `평가 항목 ${label} 근거 열기`);
-        link.style.setProperty('--x', columnX(Number(label) - 1));
-        link.style.setProperty('--y', `${random(5, 95)}%`);
-        link.style.setProperty('--rotation', `${random(-82, 82)}deg`);
-        link.addEventListener('click', (event) => {
-          if (locked) {
-            event.preventDefault();
-            return;
-          }
-          lock();
-        });
-        field.append(link);
-      });
+      const resizeObserver = new ResizeObserver(scheduleLayout);
+      resizeObserver.observe(numbers);
+      refreshMinuteKey();
+      setInterval(refreshMinuteKey, 1000);
     </script>
   </body>
 </html>

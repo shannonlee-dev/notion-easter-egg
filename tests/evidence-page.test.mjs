@@ -48,3 +48,13 @@ test('uses the approved decoy limits and the main URL builder', () => {
   assert.match(html, /NOISE_INTEGER_COUNT = 76/);
   assert.match(html, /`\$\{repository\}\/blob\/main\/\$\{path\}`/);
 });
+
+test('defines measured collision-free responsive placement', () => {
+  assert.match(html, /const COLLISION_PADDING_PX = [1-9]\d*/);
+  assert.match(html, /function rotatedBounds|const rotatedBounds/);
+  assert.match(html, /function intersects|const intersects/);
+  assert.match(html, /getBoundingClientRect\(\)/);
+  assert.match(html, /function layoutScene|const layoutScene/);
+  assert.match(html, /dataset\.overlapCount/);
+  assert.match(html, /new ResizeObserver/);
+});
