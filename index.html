@@ -49,7 +49,37 @@
     <script>
       const repository = 'https://github.com/wilderif/codyssey-b7-1';
       const paths = [
-        ['1','README.md#L5'], ['2','app/main.py#L52'], ['2','README.md#L95'], ['3','app/chat/router.py#L41'], ['3','README.md#L188'], ['4','app/chat/models.py#L49'], ['4','README.md#L304'], ['5','scripts/check_logs.sql#L1'], ['5','README.md#L353'], ['6','README.md#L389'], ['7','app/ui/router.py#L63'], ['7','app/auth/service.py#L73'], ['8','app/main.py#L60'], ['8','app/auth/dependencies.py#L26'], ['9','app/auth/dependencies.py#L50'], ['9','README.md#L166'], ['10','app/ui/templates/chat.html#L73'], ['10','app/ui/static/chat.js#L198'], ['11','app/chat/context.py#L16'], ['11','app/chat/openai_client.py#L19'], ['12','app/chat/models.py#L49'], ['12','docs/spec/db/DB.md#L145'], ['13','app/chat/router.py#L81'], ['13','app/admin/router.py#L24'], ['14','app/chat/openai_client.py#L48'], ['14','docs/spec/ai/AI.md#L56'], ['15','app/chat/router.py#L73'], ['15','app/chat/i18n.py#L20'], ['16','pull/51'], ['16','app/ui/static/chat.js#L136'], ['17','app/chat/service.py#L67'], ['17','app/chat/openai_client.py#L19'], ['18','README.md#L154'], ['18','app/ui/router.py#L144'], ['19','app/chat/schemas.py#L10'], ['19','docs/spec/api/API.md#L231'], ['20','app/main.py#L60'], ['20','app/auth/dependencies.py#L50'], ['21','app/chat/repository.py#L13'], ['21','app/auth/repository.py#L1'], ['22','app/core/config.py#L13'], ['23','.env.example#L2'], ['23','.gitignore#L15'], ['24','README.md#L401'], ['25','app/chat/router.py#L81'], ['26','README.md#L166'], ['27','app/core/config.py#L30'], ['27','app/chat/openai_client.py#L48'], ['28','app/chat/openai_client.py#L48'], ['28','docs/spec/ai/AI.md#L56'], ['29','scripts/check_logs.sql#L43'], ['29','README.md#L353'], ['30','app/chat/models.py#L81'], ['30','app/chat/models.py#L95'], ['31','README.md#L401']
+        ['1', 'README.md#L5'], ['1', 'README.md#L9'],
+        ['2', 'README.md#L127'], ['2', 'app/main.py#L52'],
+        ['3', 'README.md#L188'], ['3', 'docs/spec/api/API.md#L120'],
+        ['4', 'README.md#L304'], ['4', 'app/chat/models.py#L79'],
+        ['5', 'README.md#L353'], ['5', 'scripts/check_logs.sql#L1'],
+        ['6', 'README.md#L389'],
+        ['7', 'README.md#L172'], ['7', 'app/ui/router.py#L63'], ['7', 'app/auth/service.py#L72'],
+        ['8', 'README.md#L178'], ['8', 'app/main.py#L60'], ['8', 'app/auth/dependencies.py#L26'],
+        ['9', 'README.md#L166'], ['9', 'app/auth/dependencies.py#L50'],
+        ['10', 'app/ui/templates/chat.html#L68'], ['10', 'app/ui/static/chat.js#L197'],
+        ['11', 'docs/spec/ai/AI.md#L16'], ['11', 'app/chat/context.py#L38'], ['11', 'app/chat/openai_client.py#L26'],
+        ['12', 'app/chat/models.py#L49'], ['12', 'docs/spec/db/DB.md#L145'],
+        ['13', 'app/chat/router.py#L81'], ['13', 'app/admin/router.py#L24'], ['13', 'app/ui/router.py#L144'],
+        ['14', 'app/chat/openai_client.py#L48'], ['14', 'docs/spec/ai/AI.md#L56'],
+        ['15', 'app/chat/router.py#L69'], ['15', 'docs/spec/api/API.md#L174'],
+        ['16', 'app/chat/schemas.py#L13'], ['16', 'app/ui/static/chat.js#L135'], ['16', 'docs/spec/api/API.md#L135'],
+        ['17', 'app/chat/service.py#L67'], ['17', 'app/chat/repository.py#L13'],
+        ['18', 'README.md#L154'], ['18', 'app/ui/router.py#L144'],
+        ['19', 'app/chat/schemas.py#L13'], ['19', 'docs/spec/api/API.md#L231'],
+        ['20', 'app/main.py#L60'], ['20', 'app/auth/dependencies.py#L50'],
+        ['21', 'app/chat/repository.py#L13'], ['21', 'app/auth/repository.py#L1'],
+        ['22', 'app/core/config.py#L13'],
+        ['23', '.env.example#L1'], ['23', '.gitignore#L14'],
+        ['24', 'README.md#L401'],
+        ['25', 'README.md#L188'], ['25', 'app/chat/router.py#L101'],
+        ['26', 'README.md#L166'],
+        ['27', 'README.md#L50'], ['27', 'app/core/config.py#L30'],
+        ['28', 'app/chat/openai_client.py#L48'], ['28', 'docs/spec/ai/AI.md#L56'],
+        ['29', 'README.md#L353'], ['29', 'scripts/check_logs.sql#L43'],
+        ['30', 'app/chat/models.py#L79'], ['30', 'app/chat/repository.py#L141'],
+        ['31', 'README.md#L412']
       ];
       const noise = document.querySelector('#noise');
       const minuteKeyLayer = document.querySelector('#minute-key-layer');
@@ -133,7 +163,7 @@
 
       paths.forEach(([label, path]) => {
         const link = document.createElement('a');
-        link.href = path === 'pull/51' ? `${repository}/pull/51` : `${repository}/blob/main/${path}`;
+        link.href = `${repository}/blob/main/${path}`;
         link.target = '_blank'; link.rel = 'noreferrer'; link.textContent = label;
         link.setAttribute('aria-label', `평가 항목 ${label} 근거 열기`);
         link.style.setProperty('--x', columnX(Number(label) - 1));
