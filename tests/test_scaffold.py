@@ -4,27 +4,35 @@ import pytest
 
 
 def test_required_modules_are_importable():
-    for module_name in ("src.linear_algebra", "src.calculus", "src.optimizer"):
+    for module_name in (
+        "data_gen",
+        "analysis_clustering",
+        "analysis_shap",
+        "src.data",
+        "src.clustering",
+        "src.modeling",
+        "src.shap_analysis",
+        "src.reporting",
+    ):
         importlib.import_module(module_name)
 
 
-def test_linear_algebra_stubs_fail_explicitly():
-    linear_algebra = importlib.import_module("src.linear_algebra")
+def test_clustering_stubs_fail_explicitly():
+    clustering = importlib.import_module("src.clustering")
 
     with pytest.raises(NotImplementedError):
-        linear_algebra.create_unit_circle()
+        clustering.select_optimal_k(None)
 
 
-def test_calculus_stubs_fail_explicitly():
-    calculus = importlib.import_module("src.calculus")
-
-    with pytest.raises(NotImplementedError):
-        calculus.numerical_derivative(lambda x: x**2, x=3.0)
-
-
-def test_optimizer_stubs_fail_explicitly():
-    optimizer = importlib.import_module("src.optimizer")
-    gd = optimizer.VanillaGD(learning_rate=0.1)
+def test_shap_stubs_fail_explicitly():
+    shap_analysis = importlib.import_module("src.shap_analysis")
 
     with pytest.raises(NotImplementedError):
-        gd.step([1.0, 1.0], [2.0, 2.0])
+        shap_analysis.create_summary_plot(None, None)
+
+
+def test_reporting_stubs_fail_explicitly():
+    reporting = importlib.import_module("src.reporting")
+
+    with pytest.raises(NotImplementedError):
+        reporting.build_readme_report({})

@@ -1,14 +1,18 @@
-# AI Math Learning Scaffold
+# Customer Clustering and XAI Scaffold
 
-This repository is a scaffold for the AI/SW advanced AI math assignment.
+This repository is a scaffold for the AI/SW advanced machine learning assignment:
+cluster finance customers, train a classifier, and explain predictions with SHAP.
 
 ## Structure
 
-- `src/linear_algebra.py`: matrix transforms, power iteration, determinant-area checks, and SVD image compression.
-- `src/calculus.py`: numerical differentiation and gradient visualization.
-- `src/optimizer.py`: Vanilla GD, Momentum, and convergence path visualization.
-- `notebooks/backprop_derivation.ipynb`: two-layer neural network forward/backward derivation notes.
-- `notebooks/probability_loss.ipynb`: probability distributions and MLE-loss derivation notes.
+- `data_gen.py`: generate `finance_data.csv`.
+- `analysis_clustering.py`: run preprocessing, K selection, K-Means, PCA, and persona export.
+- `analysis_shap.py`: train/load a scikit-learn classifier and generate SHAP plots.
+- `src/data.py`: data loading and feature/target splitting.
+- `src/clustering.py`: scaling, Elbow/Silhouette, K-Means, PCA, cluster profiling.
+- `src/modeling.py`: classification model training and approval/rejection case selection.
+- `src/shap_analysis.py`: TreeExplainer, summary plot, waterfall/force plot, dependence plot.
+- `src/reporting.py`: README/report content helpers.
 - `outputs/`: generated PNG outputs.
 
 ## Setup
@@ -19,13 +23,14 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Verification
+## Execution Order
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 python3 -m pytest
-python3 -B -c "import ast, pathlib; [ast.parse(p.read_text()) for p in pathlib.Path('src').glob('*.py')]"
+python3 data_gen.py
+python3 analysis_clustering.py
+python3 analysis_shap.py
 ```
 
 ## Status
 
-Only the module and notebook skeletons are present. Mathematical implementations, derivations, and generated plots still need to be filled in.
+Only the requested skeleton is present. Analysis implementations, generated plots, and final business insights still need to be filled in.
