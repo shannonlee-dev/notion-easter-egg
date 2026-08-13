@@ -1,8 +1,4 @@
-"""Calculus utilities for the AI math assignment.
-
-This module will contain central-difference numerical differentiation and
-gradient visualization helpers.
-"""
+"""Calculus utilities for the AI math assignment."""
 
 from __future__ import annotations
 
@@ -10,10 +6,7 @@ from typing import Any, Callable
 
 
 def numerical_derivative(function: Callable[[float], float], x: float, h: float = 1e-5) -> float:
-    """Estimate f'(x) with the central difference formula.
-
-    Formula: f'(x) ~= (f(x + h) - f(x - h)) / (2h)
-    """
+    """Estimate f'(x) with the central difference formula."""
     raise NotImplementedError("Implement central-difference numerical derivative.")
 
 

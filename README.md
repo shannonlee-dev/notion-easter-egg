@@ -22,8 +22,8 @@ pip install -r requirements.txt
 ## Verification
 
 ```bash
-python3 -m pytest
-python3 -m compileall src
+PYTHONDONTWRITEBYTECODE=1 python3 -m pytest
+python3 -B -c "import ast, pathlib; [ast.parse(p.read_text()) for p in pathlib.Path('src').glob('*.py')]"
 ```
 
 ## Status

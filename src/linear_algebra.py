@@ -1,8 +1,4 @@
-"""Linear algebra utilities for the AI math assignment.
-
-This module will contain matrix transformation visualizations, power iteration,
-determinant-area checks, and SVD image compression helpers.
-"""
+"""Linear algebra utilities for the AI math assignment."""
 
 from __future__ import annotations
 

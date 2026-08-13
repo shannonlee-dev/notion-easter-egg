@@ -1,8 +1,4 @@
-"""Optimization utilities for the AI math assignment.
-
-This module will define vanilla gradient descent, momentum gradient descent,
-and contour-path visualization helpers.
-"""
+"""Optimization utilities for the AI math assignment."""
 
 from __future__ import annotations
 
@@ -12,10 +8,7 @@ from typing import Any, Callable
 
 @dataclass
 class VanillaGD:
-    """Vanilla gradient descent optimizer.
-
-    Update rule: theta_next = theta - learning_rate * gradient
-    """
+    """Vanilla gradient descent optimizer."""
 
     learning_rate: float
 
@@ -23,22 +16,14 @@ class VanillaGD:
         """Return one gradient descent update."""
         raise NotImplementedError("Implement vanilla gradient descent update.")
 
-    def optimize(
-        self,
-        initial_point: Any,
-        gradient_function: Callable[[Any], Any],
-        num_steps: int = 100,
-    ) -> list[Any]:
+    def optimize(self, initial_point: Any, gradient_function: Callable[[Any], Any], num_steps: int = 100) -> list[Any]:
         """Run gradient descent and return the full optimization path."""
         raise NotImplementedError("Collect parameter path across iterations.")
 
 
 @dataclass
 class Momentum:
-    """Momentum gradient descent optimizer.
-
-    Update rule: v_next = beta * v + gradient; theta_next = theta - learning_rate * v_next
-    """
+    """Momentum gradient descent optimizer."""
 
     learning_rate: float
     beta: float = 0.9
@@ -48,12 +33,7 @@ class Momentum:
         """Return one momentum gradient descent update."""
         raise NotImplementedError("Implement momentum gradient descent update.")
 
-    def optimize(
-        self,
-        initial_point: Any,
-        gradient_function: Callable[[Any], Any],
-        num_steps: int = 100,
-    ) -> list[Any]:
+    def optimize(self, initial_point: Any, gradient_function: Callable[[Any], Any], num_steps: int = 100) -> list[Any]:
         """Run momentum optimization and return the full optimization path."""
         raise NotImplementedError("Collect momentum path across iterations.")
 
