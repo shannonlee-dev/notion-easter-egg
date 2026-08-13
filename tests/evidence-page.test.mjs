@@ -49,10 +49,10 @@ test('uses the approved decoy limits and the main URL builder', () => {
   assert.match(html, /link\.href = evidenceUrl\(path\)/);
 });
 
-test('uses the approved five-percent larger shared number size', () => {
+test('uses the approved fifteen-percent larger shared number size', () => {
   assert.match(
     html,
-    /font-size: var\(--number-font-size, clamp\(0\.95rem, 2\.2vw, 2\.3rem\)\)/,
+    /font-size: var\(--number-font-size, clamp\(1\.1rem, 2\.5vw, 2\.65rem\)\)/,
   );
 });
 
